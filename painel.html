@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarketPulse — Inteligência Financeira em Tempo Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c14;--bg2:#0f1220;--card:#151928;--border:#222d48;
+  --green:#00d084;--red:#e8354a;--gold:#f0b429;--blue:#3b82f6;--purple:#8b5cf6;--orange:#f97316;
+  --text:#fff;--sub:#c8d4f0;--muted:#6a7a9e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:50px;background:rgba(10,12,20,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;gap:0;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:4px;color:#fff;display:flex;align-items:center;gap:8px;}
+.ld{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.tsep{width:1px;height:20px;background:var(--border);margin:0 18px;}
+.bb{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:3px;display:flex;align-items:center;gap:6px;}
+.bl{color:var(--green);}.vs{color:var(--muted);font-size:.7rem;}.br{color:var(--red);}
+.ttickers{display:flex;gap:16px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.63rem;flex:1;overflow:hidden;margin-left:20px;}
+.tt{display:flex;gap:4px;align-items:center;white-space:nowrap;}
+.tt-n{color:var(--muted);}
+.up{color:var(--green);}.down{color:var(--red);}
+.nav-btn{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;background:var(--green);color:#000;padding:7px 18px;border-radius:3px;text-decoration:none;transition:all .2s;flex-shrink:0;}
+.nav-btn:hover{background:#00ff9d;}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:80px 80px 60px;max-width:1300px;margin:0 auto;gap:60px;}
+.hl{flex:1;}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.kicker::before{content:'';width:26px;height:1px;background:var(--green);}
+.h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(3.5rem,6vw,6rem);font-weight:900;line-height:.95;letter-spacing:1px;margin-bottom:26px;}
+.h1 .acc{color:var(--green);display:block;}
+.desc{font-size:1rem;color:var(--sub);line-height:1.75;max-width:490px;margin-bottom:34px;}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.bp{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:3px;background:var(--green);color:#000;padding:13px 30px;border-radius:3px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.bp:hover{background:#00ff9d;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,208,132,.25);}
+.bs{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;color:var(--sub);padding:13px 26px;border-radius:3px;text-decoration:none;border:1px solid var(--border);transition:all .2s;}
+.bs:hover{border-color:var(--green);color:var(--green);}
+.note{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);}
+
+/* HERO RIGHT */
+.hr{flex:0 0 370px;display:flex;flex-direction:column;gap:9px;}
+.lc{background:var(--card);border:1px solid var(--border);border-radius:5px;overflow:hidden;transition:transform .2s;}
+.lc:hover{transform:translateY(-2px);}
+.lch{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.lc-n{font-family:'Barlow Condensed',sans-serif;font-size:.88rem;font-weight:800;letter-spacing:2px;color:#000;}
+.lcb{background:#0c1122;padding:11px 14px;}
+.lc-v{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.lc-vars{display:flex;gap:10px;}
+.lc-x{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;}
+.lc-g{background:var(--green);}
+.lc-r{background:var(--red);}
+.lc-y{background:var(--gold);}
+.lc-o{background:var(--orange);}
+
+/* STATS */
+.stats{position:relative;z-index:1;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:16px 80px;display:flex;gap:0;}
+.stat{flex:1;padding:0 26px;border-right:1px solid var(--border);}
+.stat:first-child{padding-left:0;}
+.stat:last-child{border-right:none;}
+.st-n{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+.st-v{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:800;color:#fff;line-height:1;}
+.st-s{font-size:.72rem;color:var(--muted);margin-top:2px;}
+
+/* FEATURES */
+.features{position:relative;z-index:1;padding:70px 80px;max-width:1300px;margin:0 auto;}
+.sl{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--green);letter-spacing:4px;text-transform:uppercase;margin-bottom:9px;}
+.stitle{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:2px;margin-bottom:40px;}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);}
+.fc{background:var(--card);padding:28px 24px;position:relative;transition:background .2s;}
+.fc:hover{background:#1c2438;}
+.fi{font-size:1.4rem;margin-bottom:14px;display:block;}
+.ft{position:absolute;top:13px;right:13px;font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:2px;padding:2px 6px;border-radius:2px;font-weight:700;}
+.tg{color:var(--green);background:rgba(0,208,132,.1);border:1px solid rgba(0,208,132,.25);}
+.tr{color:var(--red);background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.25);}
+.ty{color:var(--gold);background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.25);}
+.tp{color:var(--purple);background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);}
+.fn{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:1px;margin-bottom:7px;}
+.fd{font-size:.8rem;color:var(--sub);line-height:1.65;}
+
+/* COMO */
+.como{position:relative;z-index:1;padding:0 80px 70px;max-width:1300px;margin:0 auto;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.step{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:22px 18px;text-align:center;position:relative;}
+.sn{font-family:'Barlow Condensed',sans-serif;font-size:2.8rem;font-weight:900;color:rgba(0,208,132,.12);line-height:1;margin-bottom:8px;}
+.si{font-size:1.5rem;margin-bottom:8px;display:block;}
+.snm{font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:1px;margin-bottom:5px;}
+.sd{font-size:.78rem;color:var(--muted);line-height:1.5;}
+.sa{position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--border);font-size:1.2rem;z-index:2;}
+.step:last-child .sa{display:none;}
+
+/* NOTÍCIAS */
+.nlive{position:relative;z-index:1;padding:0 80px 70px;max-width:1300px;margin:0 auto;}
+.ng{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
+.nc{border-radius:4px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;text-decoration:none;border:1px solid transparent;transition:opacity .15s;}
+.nc:hover{opacity:.85;}
+.nc-br{background:rgba(0,208,132,.08);border-color:rgba(0,208,132,.2);}
+.nc-r{background:rgba(232,53,74,.07);border-color:rgba(232,53,74,.18);}
+.nc-eu{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.18);}
+.nc-gx{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);}
+.nc-cr{background:rgba(240,180,41,.07);border-color:rgba(240,180,41,.18);}
+.nc-mk{background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.18);}
+.ntag{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:2px;padding:2px 6px;border-radius:2px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-top:2px;color:#000;}
+.nt-br{background:var(--green);}
+.nt-r{background:var(--red);color:#fff;}
+.nt-eu{background:var(--blue);color:#fff;}
+.nt-gx{background:var(--orange);}
+.nt-cr{background:var(--gold);}
+.nt-mk{background:var(--purple);color:#fff;}
+.nt-t{font-size:.82rem;color:#e0e8ff;line-height:1.5;font-weight:500;}
+.nt-m{display:flex;gap:5px;align-items:center;margin-top:4px;}
+.nt-d{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted);}
+
+/* CTA FINAL */
+.ctaf{position:relative;z-index:1;text-align:center;padding:70px 40px;border-top:1px solid var(--border);}
+.ctaf h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;letter-spacing:2px;margin-bottom:14px;}
+.ctaf h2 span{color:var(--green);}
+.ctaf p{font-size:1rem;color:var(--sub);margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;}
+.aviso{font-size:.7rem;color:var(--muted);max-width:600px;margin:22px auto 0;line-height:1.6;padding:12px 18px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.02);}
+
+/* TICKER */
+.ticker{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(10,12,20,.97);border-top:1px solid var(--border);padding:5px 0;overflow:hidden;height:32px;display:flex;align-items:center;}
+.ticker::before,.ticker::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;}
+.ticker::before{left:0;background:linear-gradient(90deg,rgba(10,12,20,.97),transparent);}
+.ticker::after{right:0;background:linear-gradient(-90deg,rgba(10,12,20,.97),transparent);}
+.tt-tr{display:inline-flex;animation:scrollt 90s linear infinite;white-space:nowrap;}
+@keyframes scrollt{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.tn{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#c8d4f0;padding:0 20px;display:inline-flex;align-items:center;gap:5px;}
+.tn-s{color:var(--muted);}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:16px 80px;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;}
+.fl{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:4px;color:#fff;}
+.fc2{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);}
+
+@media(max-width:1000px){
+  .hero{flex-direction:column;padding:80px 24px 40px;gap:36px;}
+  .hr{flex:unset;width:100%;}
+  .stats{padding:14px 24px;flex-wrap:wrap;gap:14px;}
+  .stat{flex:0 0 45%;border-right:none;padding:0;}
+  .features,.como,.nlive{padding:50px 24px;}
+  .fg{grid-template-columns:1fr;}
+  .steps{grid-template-columns:1fr 1fr;}
+  .ng{grid-template-columns:1fr;}
+  footer{padding:14px 24px;flex-direction:column;gap:6px;text-align:center;}
+  .ttickers{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="logo"><div class="ld"></div>MARKETPULSE</div>
+  <div class="tsep"></div>
+  <div class="bb"><span class="bl">BULL</span><span class="vs">VS</span><span class="br">BEAR</span></div>
+  <div class="ttickers" id="ttickers">
+    <div class="tt"><span class="tt-n">IBOV</span><span id="t-ibov">—</span></div>
+    <div class="tt"><span class="tt-n">USD/BRL</span><span id="t-usd">—</span></div>
+    <div class="tt"><span class="tt-n">BTC</span><span id="t-btc">—</span></div>
+    <div class="tt"><span class="tt-n">ETH</span><span id="t-eth">—</span></div>
+    <div class="tt"><span class="tt-n">OURO</span><span id="t-ouro">—</span></div>
+  </div>
+  <a href="/painel" class="nav-btn">▶ ABRIR PAINEL</a>
+</nav>
+
+<section class="hero">
+  <div class="hl">
+    <div class="kicker">Painel Financeiro em Tempo Real</div>
+    <h1 class="h1">MERCADO.<br>DADOS.<br><span class="acc">DECISÕES.</span></h1>
+    <p class="desc">Ações da B3, Fundos Imobiliários, Criptomoedas e ETFs em um único painel. Análise de IA, 20+ notícias por categoria com sentimento. Atualização automática a cada 30 segundos.</p>
+    <div class="btns">
+      <a href="/painel" class="bp">▶ ABRIR PAINEL</a>
+      <a href="#features" class="bs">VER FUNCIONALIDADES</a>
+    </div>
+    <p class="note">// Atualização automática a cada 30s &nbsp;|&nbsp; Sem cadastro &nbsp;|&nbsp; 100% gratuito</p>
+  </div>
+  <div class="hr">
+    <div class="lc">
+      <div class="lch lc-g"><span class="lc-n">IBOVESPA</span><span>📈</span></div>
+      <div class="lcb">
+        <div class="lc-v" id="h-ibov">—</div>
+        <div class="lc-vars"><span class="lc-x up" id="h-ibov-d">—</span></div>
+      </div>
+    </div>
+    <div class="lc">
+      <div class="lch lc-r"><span class="lc-n">DÓLAR / REAL</span><span>💵</span></div>
+      <div class="lcb">
+        <div class="lc-v" id="h-usd">—</div>
+        <div class="lc-vars"><span class="lc-x" id="h-usd-d">—</span></div>
+      </div>
+    </div>
+    <div class="lc">
+      <div class="lch lc-o"><span class="lc-n">BITCOIN</span><span>₿</span></div>
+      <div class="lcb">
+        <div class="lc-v" id="h-btc">—</div>
+        <div class="lc-vars"><span class="lc-x up" id="h-btc-d">—</span></div>
+      </div>
+    </div>
+    <div class="lc">
+      <div class="lch lc-y"><span class="lc-n">OURO</span><span>🪙</span></div>
+      <div class="lcb">
+        <div class="lc-v" id="h-ouro">—</div>
+        <div class="lc-vars"><span class="lc-x" id="h-ouro-d">—</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="st-n">Ativos monitorados</div><div class="st-v" style="color:var(--green)">50+</div><div class="st-s">Ações, FIIs, ETFs, Criptos</div></div>
+  <div class="stat"><div class="st-n">Países cobertos</div><div class="st-v">7</div><div class="st-s">BR, EUA, China, Europa e +</div></div>
+  <div class="stat"><div class="st-n">Atualização</div><div class="st-v" style="color:var(--gold)">30s</div><div class="st-s">Automática, sem F5</div></div>
+  <div class="stat"><div class="st-n">Custo</div><div class="st-v" style="color:var(--green)">R$0</div><div class="st-s">Gratuito, sem cadastro</div></div>
+</div>
+
+<section class="features" id="features">
+  <div class="sl">// O que você vê</div>
+  <h2 class="stitle">TUDO QUE O MERCADO MOVE</h2>
+  <div class="fg">
+    <div class="fc"><span class="fi">📈</span><div class="ft tg">AO VIVO</div><div class="fn">AÇÕES B3 POR SETOR</div><div class="fd">Mapa de calor setorial: Energia, Bancos, Varejo, Telecom, Mineração. Variação diária, semanal e mensal. IA analisa os melhores momentos. ⭐ Favoritos salvos no browser.</div></div>
+    <div class="fc"><span class="fi">🏢</span><div class="ft tg">AO VIVO</div><div class="fn">FUNDOS IMOBILIÁRIOS</div><div class="fd">FIIs com dividend yield e frequência de pagamento. Aba de Dividendos com ex-data, valor por cota e recomendação da IA.</div></div>
+    <div class="fc"><span class="fi">₿</span><div class="ft tr">🔥 DESTAQUE</div><div class="fn">TOP 10 CRIPTOS</div><div class="fd">Ranking por market cap com variação 24h, 7d e 30d. Destaque da cripto com maior alta. IA identifica momentum e fraquezas.</div></div>
+    <div class="fc"><span class="fi">🤖</span><div class="ft tp">IA GROQ</div><div class="fn">ANÁLISE INTELIGENTE</div><div class="fd">Resumo do mercado em tempo real. Recomendações por ativo com aviso de responsabilidade. Sentimento 🟢🔴 em cada notícia.</div></div>
+    <div class="fc"><span class="fi">📰</span><div class="ft tg">20+ NOTÍCIAS</div><div class="fn">NOTÍCIAS COM IMPACTO</div><div class="fd">20+ notícias por categoria, filtro 24h automático. 7 países: 🇧🇷🇺🇸🇨🇳🇪🇺⚔️₿📈. Ticker com notícias priorizadas por impacto no mercado.</div></div>
+    <div class="fc"><span class="fi">🔄</span><div class="ft tg">AUTOMÁTICO</div><div class="fn">ATUALIZAÇÃO 30 SEGUNDOS</div><div class="fd">Scheduler em background coleta e atualiza tudo a cada 30s. Sem F5. Números piscam em verde/vermelho quando mudam. Status das APIs visível.</div></div>
+  </div>
+</section>
+
+<section class="como">
+  <div class="sl">// Simples assim</div>
+  <h2 class="stitle">COMO USAR</h2>
+  <div class="steps">
+    <div class="step"><div class="sn">01</div><span class="si">⚡</span><div class="snm">ABRA O PAINEL</div><div class="sd">Clique em Abrir Painel. Sem cadastro, sem senha, sem anúncios.</div><span class="sa">›</span></div>
+    <div class="step"><div class="sn">02</div><span class="si">📊</span><div class="snm">DADOS PRONTOS</div><div class="sd">O sistema já coletou tudo em background. Resposta em menos de 1 segundo.</div><span class="sa">›</span></div>
+    <div class="step"><div class="sn">03</div><span class="si">🤖</span><div class="snm">IA ANALISA</div><div class="sd">Leia o resumo, consulte recomendações por ativo e notícias com sentimento.</div><span class="sa">›</span></div>
+    <div class="step"><div class="sn">04</div><span class="si">🔄</span><div class="snm">ATUALIZA SOZINHO</div><div class="sd">Dados atualizados a cada 30 segundos automaticamente. Números piscam ao mudar.</div></div>
+  </div>
+</section>
+
+<section class="nlive">
+  <div class="sl">// Agora</div>
+  <h2 class="stitle" style="margin-bottom:20px">PRINCIPAIS NOTÍCIAS</h2>
+  <div class="ng" id="landing-news">
+    <div style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:20px;grid-column:1/-1">Carregando notícias...</div>
+  </div>
+</section>
+
+<section class="ctaf">
+  <h2>PRONTO PARA <span>INVESTIR MELHOR</span>?</h2>
+  <p>Painel completo com dados reais, IA e notícias do mercado global. 100% gratuito.</p>
+  <a href="/painel" class="bp" style="display:inline-flex">▶ ABRIR PAINEL AGORA</a>
+  <div class="aviso">⚠️ <strong>Aviso Legal:</strong> As análises geradas por IA têm fins exclusivamente informativos e educacionais. Nenhum conteúdo constitui recomendação formal de compra ou venda de ativos financeiros. A decisão de investimento é de total responsabilidade do investidor. Consulte um profissional habilitado antes de tomar decisões financeiras.</div>
+</section>
+
+<div class="ticker"><div class="tt-tr" id="tt-tr"><span class="tn">Carregando notícias...</span></div></div>
+
+<footer>
+  <div class="fl">MARKETPULSE</div>
+  <div class="fc2">© 2026 MarketPulse &nbsp;|&nbsp; 🐂 Bull vs 🐻 Bear</div>
+  <div class="fc2">Dados: brapi.dev · CoinGecko · Google News · Groq IA</div>
+</footer>
+
+<script>
+const CAT_MAP = {
+  Brasil:{bg:'nc-br',tag:'nt-br',lbl:'🇧🇷 BRASIL'},
+  EUA:   {bg:'nc-r', tag:'nt-r', lbl:'🇺🇸 EUA'},
+  China: {bg:'nc-r', tag:'nt-r', lbl:'🇨🇳 CHINA'},
+  Europa:{bg:'nc-eu',tag:'nt-eu',lbl:'🇪🇺 EUROPA'},
+  Guerras:{bg:'nc-gx',tag:'nt-gx',lbl:'⚔️ GUERRAS'},
+  Cripto:{bg:'nc-cr',tag:'nt-cr',lbl:'₿ CRIPTO'},
+  Mercado:{bg:'nc-mk',tag:'nt-mk',lbl:'📈 MERCADO'},
+};
+const CAT_C = {Brasil:'#00d084',EUA:'#e8354a',China:'#e8354a',Europa:'#3b82f6',Guerras:'#f97316',Cripto:'#f0b429',Mercado:'#8b5cf6'};
+
+function fp(v){
+  if(!v&&v!==0) return '—';
+  if(v>=1000) return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  return v.toFixed(2).replace('.',',');
+}
+function cls(v){return parseFloat(v||0)>=0?'up':'down';}
+function set(id,t,c){const e=document.getElementById(id);if(e){e.textContent=t;if(c)e.className=c;}}
+
+async function load() {
+  try {
+    const r=await fetch('/api/dados');
+    if(!r.ok&&r.status!==200) return;
+    const j=await r.json();
+    if(!j.ok){setTimeout(load,5000);return;}
+    const d=j.dados;
+
+    const ib=d.indices['Ibovespa'], ud=d.indices['Dólar/Real'], ou=d.indices['Ouro'];
+    if(ib){set('h-ibov',ib.preco_fmt||'—');set('h-ibov-d',ib.var_dia_fmt,cls(ib.var_dia));set('t-ibov',ib.var_dia_fmt,cls(ib.var_dia));}
+    if(ud){set('h-usd','R$ '+(ud.preco_fmt||'—'));set('h-usd-d',ud.var_dia_fmt,cls(ud.var_dia));set('t-usd',ud.var_dia_fmt,cls(ud.var_dia));}
+    if(ou){set('h-ouro','$'+(ou.preco_fmt||'—'));set('h-ouro-d',ou.var_dia_fmt,cls(ou.var_dia));set('t-ouro',ou.var_dia_fmt,cls(ou.var_dia));}
+
+    const btc=d.cryptos.find(c=>c.simbolo==='BTC'), eth=d.cryptos.find(c=>c.simbolo==='ETH');
+    if(btc){set('h-btc','$'+fp(btc.preco));set('h-btc-d',btc.var_dia_fmt,cls(btc.var_dia));set('t-btc',btc.var_dia_fmt,cls(btc.var_dia));}
+    if(eth){set('t-eth',eth.var_dia_fmt,cls(eth.var_dia));}
+
+    // Notícias na landing: prioriza Guerras, EUA, Brasil
+    const ord=['Guerras','EUA','China','Brasil','Europa','Cripto','Mercado'];
+    const sorted=[...d.noticias].sort((a,b)=>ord.indexOf(a.categoria)-ord.indexOf(b.categoria));
+    document.getElementById('landing-news').innerHTML = sorted.slice(0,8).map(n=>{
+      const c=CAT_MAP[n.categoria]||{bg:'nc-mk',tag:'nt-mk',lbl:n.categoria};
+      const sent=n.sentimento?`<span style="font-size:.8rem">${n.sentimento}</span>`:'';
+      return `<a class="nc ${c.bg}" href="${n.link}" target="_blank" rel="noopener">
+        <span class="ntag ${c.tag}">${c.lbl}</span>
+        <div><div class="nt-t">${n.titulo}</div>
+        <div class="nt-m">${sent}<span class="nt-d">${n.data}</span></div></div></a>`;
+    }).join('');
+
+    // Ticker
+    const items=sorted.slice(0,14).map(n=>{
+      const c=CAT_MAP[n.categoria]||{lbl:n.categoria};
+      const sent=n.sentimento?` ${n.sentimento}`:'';
+      return `<span class="tn"><span style="font-weight:700;color:${CAT_C[n.categoria]||'#d0d8f0'}">${c.lbl}</span>${sent} ${n.titulo} <span class="tn-s">///</span></span>`;
+    }).join('');
+    document.getElementById('tt-tr').innerHTML=items+items;
+
+  } catch(e){console.error(e);setTimeout(load,8000);}
+}
+
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>
